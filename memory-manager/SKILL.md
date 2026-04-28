@@ -1,6 +1,6 @@
 ---
 name: memory-manager
-description: Manage persistent memory across sessions - add, replace, remove, and search memories. Also provides health reports, maintenance suggestions, and proactive memory capture. Triggers: remember this, I prefer, our project uses, the system is, memory status, memory health, how much memory do you have, clean up memory, deduplicate memory
+description: "Manage persistent memory across sessions - add, replace, remove, and search memories. Also provides health reports, maintenance suggestions, and proactive memory capture. Triggers: remember this, I prefer, our project uses, the system is, memory status, memory health, how much memory do you have, clean up memory, deduplicate memory"
 allowed-tools: Read, write, Bash
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: session-search
-description: Search and recall past conversations from session history. Use when user asks about something from previous sessions, mentions "last time we talked about", or wants to find information from old conversations. Triggers: did we discuss, earlier you mentioned, last time, previous session, search history, recall past conversation, what did we talk about, find previous discussion
+description: "Search and recall past conversations from session history. Use when user asks about something from previous sessions, mentions \"last time we talked about\", or wants to find information from old conversations. Triggers: did we discuss, earlier you mentioned, last time, previous session, search history, recall past conversation, what did we talk about, find previous discussion"
 allowed-tools: Bash(session-search *) Read exec
 ---
 

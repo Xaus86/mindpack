@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Create new skills for OpenClaw based on demonstrated expertise or recurring workflows. Also provides automated skill improvement and quality maintenance. Triggers: make this a skill, create a skill, save this workflow, turn this into a skill, remember how to, skill for this task, can you create a skill, automate this as a skill
+description: "Create new skills for OpenClaw based on demonstrated expertise or recurring workflows. Also provides automated skill improvement and quality maintenance. Triggers: make this a skill, create a skill, save this workflow, turn this into a skill, remember how to, skill for this task, can you create a skill, automate this as a skill"
 allowed-tools: Read, write, Bash
 ---
 
@@ -71,7 +71,7 @@ Tell the user:
 ```markdown
 ---
 name: my-skill-name
-description: "What this skill does. Start with an action verb. Be specific about when to use it."
+description: "Create new skills for OpenClaw based on demonstrated expertise or recurring workflows. Also provides automated skill improvement and quality maintenance. Triggers: make this a skill, create a skill, save this workflow, turn this into a skill, remember how to, skill for this task, can you create a skill, automate this as a skill"
 allowed-tools: ToolName(tool-arg *) Read write exec
 ---
 
