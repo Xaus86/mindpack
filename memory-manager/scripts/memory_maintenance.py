@@ -25,7 +25,15 @@ MAX_MEMORY_CHARS = 2200
 MAX_USER_CHARS = 1375
 
 def load_entries(filepath: Path) -> List[str]:
-    """Load memory entries from a file."""
+    """Load memory entries from a file.
+    
+    Supports two formats:
+    1. §-delimited format: entries separated by "§" on its own line
+    2. Markdown header format: entries starting with "## " sections
+    
+    The § format takes precedence if both patterns are detected,
+    to maintain backward compatibility with the intended design.
+    """
     if not filepath.exists():
         return []
     
@@ -33,29 +41,67 @@ def load_entries(filepath: Path) -> List[str]:
     if not content.strip():
         return []
     
-    # Split by § delimiter
-    entries = []
-    for part in content.split(ENTRY_DELIMITER):
-        part = part.strip()
-        if part:
-            entries.append(part)
+    # Strategy: Detect which format is actually in use
+    # If § appears as a standalone line delimiter, use §-splitting
+    # Otherwise fall back to ## header splitting
     
-    # Also handle legacy format (no delimiter, just headers)
-    if not entries and content.strip():
-        # Try to split by section headers (##)
-        lines = content.strip().split('\n')
-        current = []
+    lines = content.split('\n')
+    has_section_markers = any(line.strip() == '§' for line in lines)
+    has_header_markers = any(line.startswith('## ') for line in lines)
+    
+    if has_section_markers:
+        # Use § delimiter format
+        entries = []
+        for part in content.split('\n§\n'):
+            part = part.strip()
+            if part:
+                entries.append(part)
+        # If § is present but split produced nothing, try raw § split
+        if not entries:
+            for part in content.split('§'):
+                part = part.strip()
+                if part:
+                    entries.append(part)
+    elif has_header_markers:
+        # Use ## header format (current MEMORY.md structure)
+        entries = []
+        current_lines = []
+        in_header_section = False
+        
         for line in lines:
-            if line.startswith('## '):
-                if current:
-                    entries.append('\n'.join(current))
-                current = [line]
-            else:
-                current.append(line)
-        if current:
-            entries.append('\n'.join(current))
+            stripped = line.strip()
+            if stripped.startswith('## '):
+                # Save previous section
+                if current_lines:
+                    section_text = '\n'.join(current_lines).strip()
+                    if section_text:
+                        entries.append(section_text)
+                # Start new section
+                current_lines = [line]
+                in_header_section = True
+            elif in_header_section:
+                current_lines.append(line)
+        
+        # Don't forget the last section
+        if current_lines:
+            section_text = '\n'.join(current_lines).strip()
+            if section_text:
+                entries.append(section_text)
+    else:
+        # No clear structure, treat entire content as single entry
+        entries = [content.strip()]
     
-    return entries
+    # Filter out the title line (first # heading) from each entry
+    # This keeps entries focused on content, not metadata
+    cleaned_entries = []
+    for entry in entries:
+        lines = entry.split('\n')
+        # Skip entries that are just a title with no real content
+        if len(lines) == 1 and lines[0].startswith('#'):
+            continue
+        cleaned_entries.append(entry)
+    
+    return cleaned_entries
 
 def find_duplicates(entries: List[str]) -> List[Tuple[int, int]]:
     """Find duplicate or near-duplicate entries. Returns list of (idx, duplicate_of_idx)."""
@@ -262,7 +308,13 @@ def generate_cleanup_report(memory_file: str, user_file: str) -> str:
     return "\n".join(report)
 
 def create_backup():
-    """Create a timestamped backup of current memory files."""
+    """Create a timestamped backup of current memory files.
+    
+    Uses shutil.copy2 to preserve the original file while creating a backup copy.
+    The original file stays in place; only a copy goes to the backup directory.
+    """
+    import shutil
+    
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -270,7 +322,7 @@ def create_backup():
     for filepath in [MEMORY_FILE, USER_FILE]:
         if filepath.exists():
             backup_path = BACKUP_DIR / f"{filepath.stem}_{timestamp}{filepath.suffix}"
-            filepath.rename(backup_path)
+            shutil.copy2(filepath, backup_path)
             print(f"📦 Backed up: {filepath.name} → {backup_path.name}")
 
 def main():

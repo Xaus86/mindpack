@@ -14,6 +14,30 @@ Manage persistent memory that persists across all sessions. Provides intelligent
 - **USER.md**: `~/.openclaw/workspace/USER.md` — User profile and preferences (~1,375 chars)
 - **Maintenance Script**: `~/.openclaw/workspace/skills/memory-manager/scripts/memory_maintenance.py`
 
+## Memory File Format
+
+The parser supports **two formats** automatically:
+
+### Format 1: Markdown Header (current recommended format)
+```markdown
+# MEMORY.md - Long-Term Memory
+
+## 关于 James（老板）
+- 位置：山东济南
+- 职业：互联网产品总监
+
+## 项目
+- 成人用品跨境电商
+```
+
+### Format 2: § Delimiter (legacy/alternative)
+```
+§ 位置：山东济南
+§ 职业：互联网产品总监
+```
+
+The parser automatically detects which format is in use. **You don't need to worry about choosing** — just write entries naturally. Both formats are fully supported.
+
 ## The Frozen Snapshot Pattern
 
 Memory files are **snapshotted at session start** for stable prefix caching.
@@ -108,18 +132,23 @@ This checks for:
 ## Memory Writing Rules
 
 ### Good Memory Entries ✓
-```
-§ User prefers concise responses, dislikes verbose explanations
-§ Project uses pytest with xdist for parallel test execution
-§ Development server runs on port 3000
-§ API credentials are in ~/.env.local (never commit this file)
+```markdown
+## 关于 James（老板）
+- 位置：山东济南
+- 职业：互联网产品总监
+- 喜欢简洁直接的风格
+
+## 项目
+- 成人用品跨境电商
+- AI培训 & AI企业服务
 ```
 
 ### Bad Memory Entries ✗
-```
-§ "User prefers concise responses" → Don't use imperative, it becomes a command
-§ "Run tests with pytest -n 4" → Procedure, not fact. Put in a skill instead.
-§ [Very long paragraph] → Brevity is key
+```markdown
+## Memory
+User prefers concise responses  → Don't use imperative phrasing, it sounds like a command
+Run tests with pytest -n 4  → This is a procedure, not a fact. Put in a skill instead.
+[Very long paragraph]  → Brevity is key
 ```
 
 ### Key Distinction
