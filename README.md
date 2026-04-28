@@ -1,130 +1,104 @@
 # 🧠 MindPack
 
-> Memory + Skills for OpenClaw — Make your AI assistant smarter over time.
+**让你的 AI 助理真正记住你。**
 
-**MindPack** is a collection of skills for [OpenClaw](https://github.com/openclaw/openclaw) that add long-term memory, conversation search, and automatic skill creation capabilities.
+MindPack 是一套为 OpenClaw 打造的技能包，包含长期记忆、会话搜索和自动创建技能的能力。解决 AI 助理"每次对话都是陌生人"的痛点。
 
-## Features
+---
 
-### 📚 Session Search (`session-search`)
-Search and recall past conversations from your entire chat history.
+## 这个项目解决什么问题？
 
-- Full-text search powered by SQLite FTS5
-- AI-powered summarization of relevant sessions
-- Automatic background indexing every 30 minutes
-- Privacy-respecting: only searches your direct conversations
+你有没有遇到过这种情况——
 
-### ✨ Skill Creator (`skill-creator`)
-Transform demonstrated expertise into reusable skills.
+> 上周我们讨论过 XX 项目用 Vue 还是 React，你说倾向 React，但 AI 完全不记得。
+> 你纠正过一次"我不喜欢太啰嗦的回复"，结果下一周 AI 依然长篇大论。
 
-- Manual skill creation via skill creation workflow
-- AI-assisted skill drafting
-- Automatic skill validation
-- Quality guidelines and best practices
+**因为大多数 AI 助理根本没有记忆。**
 
-### 💾 Memory Manager (`memory-manager`)
-Intelligent long-term memory for your AI assistant.
+MindPack 把记忆能力带回来。
 
-- Proactive memory suggestions ("Should I remember that?")
-- Automatic memory maintenance (deduplication, cleanup)
-- Memory health reports
-- Frozen snapshot pattern for stable context
+---
 
-## Installation
+## 三个技能
 
-### Option 1: Install All Skills
+### 📚 Session Search — 找到过去的对话
+
+用过但忘了在哪？Session Search 帮你搜索全部历史会话，基于内容相关性而非时间顺序。
+
+```
+你：上次我们聊过 K8s 部署的那些内容？
+AI：找到 2 个相关会话，分别是 4 月 15 日和 4 月 22 日的讨论。
+```
+
+### ✨ Skill Creator — 让 AI 学会新技能
+
+发现一个工作流程值得复用？一键把它变成可重用的技能，AI 下次遇到类似任务自动调用。
+
+```
+你：把我们部署流程做成技能
+AI：已创建 'deploy-workflow' 技能。
+    下次部署时说"用 deploy-workflow" 就行。
+```
+
+### 💾 Memory Manager — 持久记忆，不用重复
+
+AI 会主动捕捉值得记住的信息，你也可以随时告诉它。
+
+```
+你：我喜欢简洁的回复
+AI：💡 要记住这个偏好吗？
+```
+
+---
+
+## 安装
 
 ```bash
-# Copy skills to your OpenClaw skills directory
-cp -r session-search ~/.openclaw/workspace/skills/
-cp -r skill-creator ~/.openclaw/workspace/skills/
-cp -r memory-manager ~/.openclaw/workspace/skills/
+# 克隆到本地
+git clone https://github.com/Xaus86/mindpack.git
+
+# 复制到 OpenClaw skills 目录
+cp -r mindpack/* ~/.openclaw/workspace/skills/
 ```
 
-### Option 2: Install Individually
+然后重启 OpenClaw 即可。
 
-```bash
-# Session Search (requires indexing script)
-cp -r session-search ~/.openclaw/workspace/skills/
+---
 
-# Skill Creator
-cp -r skill-creator ~/.openclaw/workspace/skills/
+## 工作原理
 
-# Memory Manager
-cp -r memory-manager ~/.openclaw/workspace/skills/
-```
+| 技能 | 存储位置 | 数据来源 |
+|------|---------|---------|
+| session-search | SQLite + FTS5 | OpenClaw 会话历史 |
+| skill-creator | `~/.openclaw/workspace/skills/` | 手动/自动创建 |
+| memory-manager | `MEMORY.md` + `USER.md` | 实时学习 |
 
-## Quick Start
+---
 
-After installation, the skills are automatically discovered by OpenClaw.
+## 技术细节
 
-### Session Search
-```
-You: What did we discuss about Tailwind last time?
-AI: [Uses session-search skill to find relevant past conversations]
-```
+- **会话索引**：Python 3 + SQLite FTS5，后台每 30 分钟自动更新
+- **技能格式**：纯 SKILL.md，完全兼容 OpenClaw 技能系统
+- **记忆管理**：文件持久化，支持健康检查和自动清理
 
-### Create a Skill
-```
-You: Make this deployment process a skill
-AI: [Uses skill-creator skill to create SKILL.md]
-```
+---
 
-### Memory Management
-```
-You: I prefer concise responses
-AI: Should I remember that? → Yes / No
-```
+## 兼容性
 
-## Requirements
+- ✅ 不依赖 OpenClaw 内部 API
+- ✅ 不修改 OpenClaw 核心代码
+- ✅ 大版本升级后依然可用
+- ✅ 支持 macOS / Linux / Windows (WSL)
 
-- OpenClaw installed and configured
-- Python 3.8+ (for scripts)
-- SQLite with FTS5 support (built into Python)
+---
 
-## Project Structure
+## 关于作者
 
-```
-mindpack/
-├── session-search/
-│   ├── SKILL.md           # Skill definition
-│   └── scripts/
-│       ├── index_sessions.py    # Background indexer
-│       └── search_sessions.py   # Search interface
-├── skill-creator/
-│   ├── SKILL.md           # Skill definition
-│   └── scripts/
-│       ├── validate_skill.py      # Quality validation
-│       └── auto_create_skill.py   # AI skill creation
-├── memory-manager/
-│   ├── SKILL.md           # Skill definition
-│   └── scripts/
-│       └── memory_maintenance.py  # Health check & cleanup
-└── README.md
-```
+初衷是给 OpenClaw 加上 Hermes Agent 那样的自学习能力，但用更轻量的方式实现。
 
-## Skills Documentation
+如果你也有类似需求，欢迎 Fork 和贡献代码。
 
-Each skill has its own `SKILL.md` with detailed usage instructions. OpenClaw will automatically include them when relevant.
+---
 
-## Compatibility
-
-MindPack is designed to be compatible with future OpenClaw versions:
-- Skills are pure SKILL.md format (no internal API dependencies)
-- Scripts live in workspace (not in OpenClaw source)
-- No modifications to OpenClaw core
-
-## License
-
-MIT License - feel free to use, modify, and distribute.
-
-## Contributing
-
-Contributions welcome! Areas for improvement:
-- Additional memory providers
-- More search backends
-- Skill templates library
-
-## Acknowledgments
-
-Inspired by [Hermes Agent](https://github.com/NousResearch/hermes-agent) and its self-learning capabilities. MindPack brings similar concepts to OpenClaw users.
+**许可证**：MIT  
+**作者**：[@Xaus86](https://github.com/Xaus86)

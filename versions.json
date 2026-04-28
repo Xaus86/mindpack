@@ -1,0 +1,54 @@
+{
+  "name": "mindpack",
+  "version": "1.0.0",
+  "description": "Memory + Skills for OpenClaw — Make your AI assistant smarter over time",
+  "homepage": "https://github.com/Xaus86/mindpack",
+  "author": "Xaus86",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Xaus86/mindpack.git"
+  },
+  "keywords": [
+    "openclaw",
+    "ai-assistant", 
+    "memory",
+    "skills",
+    "productivity",
+    "chatbot"
+  ],
+  "skills": {
+    "session-search": {
+      "description": "Search and recall past conversations from session history",
+      "version": "1.0.0",
+      "scripts": [
+        "index_sessions.py",
+        "search_sessions.py"
+      ]
+    },
+    "skill-creator": {
+      "description": "Transform demonstrated expertise into reusable skills",
+      "version": "1.0.0",
+      "scripts": [
+        "validate_skill.py",
+        "auto_create_skill.py"
+      ]
+    },
+    "memory-manager": {
+      "description": "Intelligent long-term memory management with proactive suggestions",
+      "version": "1.0.0",
+      "scripts": [
+        "memory_maintenance.py"
+      ]
+    }
+  },
+  "requirements": {
+    "python": ">=3.8",
+    "openclaw": ">=1.0.0"
+  },
+  "platforms": [
+    "darwin",
+    "linux",
+    "windows-wsl"
+  ]
+}
